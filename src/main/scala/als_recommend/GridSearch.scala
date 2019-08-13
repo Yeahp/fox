@@ -10,7 +10,7 @@ object GridSearch {
   def main(args: Array[String]): Unit = {
     val (ratingRDD, movieTitle) = Recommend.PrepareData()
     val Array(trainData: RDD[Rating], validationData: RDD[Rating], testData: RDD[Rating]) = ratingRDD.randomSplit(Array(0.8, 0.1, 0.1))
-
+    trainValidation(trainData, validationData)
   }
 
   def trainValidation(trainData: RDD[Rating], validationData: RDD[Rating]): MatrixFactorizationModel = {
@@ -50,6 +50,7 @@ object GridSearch {
     val endTime = new DateTime()
     val rmse = computeRmse(model, validationData)
     val duration = new Duration(startTime, endTime)
+    println(f"TRAIN PARAMETER: RANK-$rank%3d, ITERATIONS-$numIterations%3d, LAMBDA-$lambda%.2f, RMSE-$rmse%.2f, TIME-" + duration.getMillis + "mills")
     (rmse, duration.getStandardSeconds)
   }
 

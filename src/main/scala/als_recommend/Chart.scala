@@ -29,7 +29,7 @@ object Chart {
     val plot = chart.getCategoryPlot
     plot.setBackgroundPaint(new Color(255, 255, 255))
     plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT)
-    plot.setDataset(, dataLinechart)
+    plot.setDataset(1, dataLinechart)
     plot.mapDatasetToRangeAxis(1, 1)
 
     // draw bar y

@@ -1,3 +1,5 @@
+package demo
+
 import org.apache.spark.SparkConf
 import org.apache.spark.mllib.fpm.FPGrowth
 import org.apache.spark.sql.SparkSession
