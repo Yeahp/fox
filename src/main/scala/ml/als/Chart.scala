@@ -1,4 +1,4 @@
-package als
+package ml.als
 
 import java.awt.Color
 

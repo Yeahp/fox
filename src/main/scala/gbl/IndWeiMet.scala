@@ -84,7 +84,7 @@ object IndWeiMet {
     //step0 : create schema for each conversion from RDD[Vector] to DataFrame after normalizer
     var schema = new StructType()
     for (ele <- inDF3.columns.toList) {
-      schema = schema.add(ele,DoubleType,false)
+      schema = schema.add(ele, DoubleType,false)
     }
 
     //step1 : feature normalization
@@ -99,7 +99,7 @@ object IndWeiMet {
     val inDF3_Vec = assembler.transform(inDF3)
     //inDF3_Vec: org.apache.spark.sql.DataFrame = [DF_NF_ITEM_CNT: double, ... 11 more fields]
 
-    var featureVectors=scaler
+    var featureVectors = scaler
       .setInputCol("features")
       .setOutputCol("scaledFeatures")
       .fit(inDF3_Vec)
@@ -112,11 +112,11 @@ object IndWeiMet {
     //featureVectors: org.apache.spark.sql.DataFrame = [scaledFeatures: vector]
 
     //Convert normalized feature to matrix to calculate final score in the last step
-    val NormizeFeatureRDD = featureVectors.rdd.map(row=>row.getAs[Vector](0))
+    val NormizeFeatureRDD = featureVectors.rdd.map(row => row.getAs[Vector](0))
     val GBLMatrix = new RowMatrix(NormizeFeatureRDD)
     val featureRDD = featureVectors.rdd
-      .map(row=>row.getAs[Vector](0))
-      .map(v =>Row.fromSeq(v.toArray))
+      .map(row => row.getAs[Vector](0))
+      .map(v => Row.fromSeq(v.toArray))
     val NormFeatureDF = spark.createDataFrame(featureRDD,schema)
     //cache NormFeatureDF as it will be used many times in the following iteration
     NormFeatureDF.cache()
@@ -130,10 +130,10 @@ object IndWeiMet {
     for(col <- metricCols) {
       //save each column as vector
       //val yVector = Vectors.dense(NormFeatureDF.select(col).collect().map(row=>row.getAs[Double](0)))
-      val yAbsRDD = NormFeatureDF.select(col).rdd.map(row=>row.getAs[Double](0))
+      val yAbsRDD = NormFeatureDF.select(col).rdd.map(row => row.getAs[Double](0))
 
       //replace each column with constant 1 (it is taken as the constant value in linear regression
-      val f = NormFeatureDF.withColumn(col,lit(1.0))
+      val f = NormFeatureDF.withColumn(col, lit(1.0))
       val f2= f.withColumn(col,f(col).cast(sql.types.DoubleType)) //cast lit(1.0) as double
       val f3=f2.rdd.map({ case row =>
         Vectors.dense(row.toSeq.toArray.map{

@@ -1,4 +1,4 @@
-package als
+package ml.als
 
 import org.apache.spark.mllib.recommendation.{ALS, MatrixFactorizationModel, Rating}
 import org.apache.spark.rdd.RDD
